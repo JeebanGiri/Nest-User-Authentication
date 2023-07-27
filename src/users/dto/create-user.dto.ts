@@ -1,12 +1,24 @@
 import { Transform } from 'class-transformer';
-import { IsString, IsStrongPassword, MinLength } from 'class-validator';
+import { IsString, MinLength } from '@nestjs/class-validator';
+import { IsStrongPassword } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger/dist/decorators';
+import { UsersService } from '../users.service';
 
 export class CreateUserDto {
+  constructor(private usersService: UsersService) {}
+  @ApiProperty({
+    description: 'Users Emails.',
+    example: 'jeebangiri942@gmail.com',
+  })
   @IsString()
   @MinLength(3)
   @Transform(({ value }) => value.trim())
-  username: string;
+  email: string;
 
+  @ApiProperty({
+    description: 'Users Password',
+    example: 'Jeeban@123456',
+  })
   @IsStrongPassword({
     minLength: 8,
     minLowercase: 1,
