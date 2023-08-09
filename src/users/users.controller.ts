@@ -25,10 +25,11 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger/dist';
 import { User } from './entities/users.entity';
-import { CustomAuthGuard } from 'src/auth/auth.gard';
+import { AuthGuard } from 'src/auth/auth.gard';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 import { RequestPasswordResetDto } from './dto/request-passwordreset.dto';
+import { JwtStrategy } from 'src/auth/jwt.strategy';
 
 @ApiTags('Users')
 @Controller('users')
@@ -36,8 +37,8 @@ export class UserController {
   constructor(private userService: UsersService) {}
 
   @HttpCode(HttpStatus.OK)
-  @Post('signup') 
-  @ApiOperation({summary: 'Users created account..'})
+  @Post('signup')
+  @ApiOperation({ summary: 'Users created account..' })
   @ApiCreatedResponse({
     description: 'create a user sign up object..',
     type: User,
@@ -52,8 +53,8 @@ export class UserController {
   @Get()
   @ApiOperation({ summary: 'get all users data.' })
   @ApiOkResponse({ type: User, isArray: true })
-  @ApiOkResponse({description: 'Getting all data sucessfully!'})
-  @ApiBadRequestResponse({description: 'Internal Server Errors..'})
+  @ApiOkResponse({ description: 'Getting all data sucessfully!' })
+  @ApiBadRequestResponse({ description: 'Internal Server Errors..' })
   findAll() {
     return this.userService.findAll();
   }
@@ -73,12 +74,13 @@ export class UserController {
   verify(@Param('code') code: string) {
     return this.userService.verifyOtp(+code);
   }
-  @UseGuards(CustomAuthGuard)
-  @ApiBearerAuth()
+
+  @UseGuards(JwtStrategy)
+  @ApiBearerAuth()  
   @Get('profile')
   @ApiOperation({ summary: 'Enter the details to enter your profile..' })
-  @ApiOkResponse({  description: 'User profile is unlock' })
-  @ApiBadRequestResponse({  description: 'User not found.' })
+  @ApiOkResponse({ description: 'User profile is unlock' })
+  @ApiBadRequestResponse({ description: 'User not found.' })
   @ApiUnauthorizedResponse({ description: 'Unathorize and invalid token' })
   userProfile(@Request() req) {
     const user = req.user;
@@ -86,7 +88,7 @@ export class UserController {
     return user;
   }
 
-  @UseGuards(CustomAuthGuard)
+  @UseGuards(AuthGuard)
   @ApiBearerAuth('Auth')
   @Post('/changepassword')
   @ApiOperation({ summary: 'Change your password.' })

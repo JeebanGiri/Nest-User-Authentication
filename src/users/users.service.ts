@@ -47,6 +47,8 @@ export class UsersService {
   //   return this.authService.generateJwt(payload);
   // }
 
+
+  
   // Getting all data from repository..
   async findOne(datas: any): Promise<User> {
     return this.authRepository.findOne({
@@ -79,7 +81,6 @@ export class UsersService {
       return isVerified;
     }
   }
-
   async changePassword(changePasswordDto: ChangePasswordDto, repdata) {
     try {
       let users = await this.findOne({ id: repdata['id'] });
@@ -100,6 +101,7 @@ export class UsersService {
         await this.authRepository.update(users.id, {
           password: passwordHashed,
         });
+
         return { message: 'Password change sucessfully..' };
       }
     } catch (e) {

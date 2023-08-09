@@ -16,7 +16,7 @@ import { User } from 'src/users/entities/users.entity';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '30s' },
+      signOptions: { expiresIn: '300s' },
     }),
   ],
   controllers: [AuthController],  

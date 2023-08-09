@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/users.entity';
+import { MessagesModule } from './messages/messages.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(
@@ -22,6 +23,7 @@ import { User } from './users/entities/users.entity';
     }),
     AuthModule,
     UsersModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
