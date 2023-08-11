@@ -10,12 +10,15 @@ import {
   UseGuards,
   Request,
   Patch,
+  ParseIntPipe,
+  UsePipes,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, createUserSchema } from './dto/create-user.dto';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -26,10 +29,20 @@ import {
 } from '@nestjs/swagger/dist';
 import { User } from './entities/users.entity';
 import { AuthGuard } from 'src/auth/auth.gard';
-import { ChangePasswordDto } from './dto/change-password.dto';
-import { ForgetPasswordDto } from './dto/forget-password.dto';
-import { RequestPasswordResetDto } from './dto/request-passwordreset.dto';
+import {
+  ChangePasswordDto,
+  changePasswordSchema,
+} from './dto/change-password.dto';
+import {
+  ForgetPasswordDto,
+  forgetPasswordSchema,
+} from './dto/forget-password.dto';
+import {
+  RequestPasswordResetDto,
+  requestForgetPasswordSchema,
+} from './dto/request-passwordreset.dto';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
+import { JoiValidationPipe } from 'src/pipes/joi-validation.pipe';
 
 @ApiTags('Users')
 @Controller('users')
@@ -46,6 +59,8 @@ export class UserController {
   @ApiBadRequestResponse({
     description: 'You cannot signup Try Again',
   })
+  @UsePipes(new JoiValidationPipe(createUserSchema))
+  @ApiBody({ type: CreateUserDto }) // circular dependency
   signUp(@Body() createUserDto: CreateUserDto) {
     return this.userService.signUp(createUserDto);
   }
@@ -61,22 +76,22 @@ export class UserController {
 
   @Delete('/delete/:id')
   @ApiOperation({ summary: 'Get an Id of user.' })
-  @ApiResponse({ status: 200, description: 'User sucessfully deleted.' })
-  @ApiResponse({ status: 404, description: 'User Not Found' })
-  deleteData(@Param('id') id: string) {
-    return this.userService.deletedData(+id);
+  @ApiResponse({ description: 'User sucessfully deleted.' })
+  @ApiResponse({ description: 'User Not Found' })
+  deleteData(@Param('id', new ParseIntPipe()) id: number) {
+    return this.userService.deletedData(id);
   }
 
   @Get('/verifyotp/:code')
   @ApiOperation({ summary: 'get a otp Code..' })
   @ApiResponse({ status: 200, description: 'otp verification sucessfully' })
   @ApiResponse({ status: 404, description: 'User is not verified...' })
-  verify(@Param('code') code: string) {
-    return this.userService.verifyOtp(+code);
+  verify(@Param('code', new ParseIntPipe()) code: number) {
+    return this.userService.verifyOtp(code);
   }
 
   @UseGuards(JwtStrategy)
-  @ApiBearerAuth()  
+  @ApiBearerAuth()
   @Get('profile')
   @ApiOperation({ summary: 'Enter the details to enter your profile..' })
   @ApiOkResponse({ description: 'User profile is unlock' })
@@ -91,6 +106,8 @@ export class UserController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth('Auth')
   @Post('/changepassword')
+  @UsePipes(new JoiValidationPipe(changePasswordSchema))
+  @ApiBody({ type: ChangePasswordDto }) // circular dependency
   @ApiOperation({ summary: 'Change your password.' })
   @ApiOkResponse({ description: 'Password Change Sucessfully' })
   @ApiBadRequestResponse({ description: 'Invalid credentials match' })
@@ -98,10 +115,12 @@ export class UserController {
     return this.userService.changePassword(changePasswordDto, req.user);
   }
 
+  @Post('/passwordreset')
+  @UsePipes(new JoiValidationPipe(requestForgetPasswordSchema))
+  @ApiBody({ type: RequestPasswordResetDto }) // circular dependency
   @ApiOperation({ summary: 'Request for password reset..' })
   @ApiCreatedResponse({ description: 'Password reset sucessfully!' })
   @ApiNotFoundResponse({ description: 'Invalid email' })
-  @Post('/passwordreset')
   RequestForPasswordReset(
     @Body() requestPasswordResetDto: RequestPasswordResetDto,
   ) {
@@ -109,9 +128,11 @@ export class UserController {
   }
 
   @Patch('/resetPassword')
+  @UsePipes(new JoiValidationPipe(forgetPasswordSchema))
+  @ApiBody({ type: ForgetPasswordDto }) // circular dependency
   @ApiOperation({ summary: 'Reset Your Password..' })
   @ApiOkResponse({ description: 'Password Reset Sucessfully..' })
-  @ApiBadRequestResponse({ description: 'Password donot Match...' })
+  @ApiBadRequestResponse({ description: 'Password do not Match...' })
   resetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
     return this.userService.resetPassword(forgetPasswordDto);
   }

@@ -2,9 +2,15 @@ import { IsString, MinLength } from '@nestjs/class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsStrongPassword } from 'class-validator';
+import * as Joi from 'joi';
 
-export class SignInDto { 
 
+export const signInSchema = Joi.object({
+  email: Joi.string().required(),
+  password: Joi.string().required(),
+});
+
+export class SignInDto {
   @ApiProperty({
     description: 'email',
     example: 'jeeban@gmail.com',

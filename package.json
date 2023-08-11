@@ -38,6 +38,7 @@
     "class-validator": "^0.14.0",
     "dotenv": "^16.3.1",
     "hbs": "^4.2.0",
+    "joi": "^17.9.2",
     "nestjs-class-transformer": "^1.0.11",
     "nodemailer": "^6.9.4",
     "passport": "^0.6.0",

@@ -3,6 +3,13 @@ import { IsString, MinLength } from '@nestjs/class-validator';
 import { IsStrongPassword } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger/dist/decorators';
 import { UsersService } from '../users.service';
+import * as Joi from 'joi';
+
+export const createUserSchema = Joi.object({
+  email: Joi.string().required(),
+  password: Joi.string().required()
+
+})
 
 export class CreateUserDto {
   constructor(private usersService: UsersService) {}

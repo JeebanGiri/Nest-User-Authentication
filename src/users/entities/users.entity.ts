@@ -4,7 +4,6 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('authentication')
@@ -15,7 +14,7 @@ export class User {
 
   @ApiProperty({
     description: 'email    ',
-    example: ' Jeeban.giri5995@gmail.com',
+    example: ' jeeban.giri5995@gmail.com',
   })
   @Column()
   email: string;
