@@ -41,7 +41,7 @@ import {
   RequestPasswordResetDto,
   requestForgetPasswordSchema,
 } from './dto/request-passwordreset.dto';
-import { JwtStrategy } from 'src/auth/jwt.strategy';
+import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
 import { JoiValidationPipe } from 'src/pipes/joi-validation.pipe';
 
 @ApiTags('Users')
@@ -103,7 +103,7 @@ export class UserController {
     return user;
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtStrategy)
   @ApiBearerAuth('Auth')
   @Post('/changepassword')
   @UsePipes(new JoiValidationPipe(changePasswordSchema))

@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/users.entity';
 import { MessagesModule } from './messages/messages.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { UserInterceptor } from './auth/intereceptors/users.interceptors';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync(
@@ -26,7 +28,10 @@ import { MessagesModule } from './messages/messages.module';
     MessagesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  // when we import this intercept, we can use this as a global and it also support the dependency.
+  providers: [AppService,
+    {provide: APP_INTERCEPTOR, useClass: UserInterceptor}   
+  ],
 })
 export class AppModule {}
 

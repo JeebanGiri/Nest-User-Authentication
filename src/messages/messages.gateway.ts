@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { OnModuleInit } from '@nestjs/common';
-import { JwtStrategy } from 'src/auth/jwt.strategy';
+import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
 import { UsersService } from 'src/users/users.service';
 
 @WebSocketGateway()
