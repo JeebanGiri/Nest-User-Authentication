@@ -28,7 +28,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger/dist';
 import { User } from './entities/users.entity';
-import { AuthGuard } from 'src/auth/auth.gard';
+import { AuthGuard } from 'src/@Guard/auth.gard';
 import {
   ChangePasswordDto,
   changePasswordSchema,
@@ -41,7 +41,7 @@ import {
   RequestPasswordResetDto,
   requestForgetPasswordSchema,
 } from './dto/request-passwordreset.dto';
-import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
+import { JwtStrategy } from 'src/strategies/jwt.strategy';
 import { JoiValidationPipe } from 'src/pipes/joi-validation.pipe';
 
 @ApiTags('Users')

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { MessagesGateway } from './messages.gateway';
-import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
+import { JwtStrategy } from 'src/strategies/jwt.strategy';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
